@@ -105,11 +105,11 @@ export function splitLots(totalLots) {
  */
 export async function placeOrder({ side, type, price, size, leverage }) {
   const body = {
-    clientOid: `gold_${Date.now()}`,
+    clientOid:  `gold_${Date.now()}`,
     side,           // "buy" | "sell"
-    symbol: SYMBOL,
+    symbol:     SYMBOL,
     type,           // "limit" | "market"
-    leverage: String(leverage),
+    leverage:   String(leverage),
     size,
     ...(type === "limit" ? { price: String(price), timeInForce: "GTC" } : {}),
   };
