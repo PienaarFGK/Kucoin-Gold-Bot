@@ -14,7 +14,9 @@ export function parsePremiumMessage(text) {
   const t = text.trim();
 
   // ── Close now ──────────────────────────────────────────────────────────────
-  if (/take\s*profit\s*now|close\s*(all|position|now)/i.test(t)) {
+  // Matches: "take profit now", "close profit now", "close proift now" (typo),
+  //          "close all", "close position", "close now"
+  if (/take\s*profit\s*now|close\b.*\bnow\b|close\s*(all|position|profit)/i.test(t)) {
     return { type: "closeNow" };
   }
 
