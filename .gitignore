@@ -1,0 +1,4 @@
+.env
+session.txt
+trades.log
+node_modules/
