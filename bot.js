@@ -374,7 +374,7 @@ async function main() {
     console.log(msg.text);
     console.log("────────────────────────────────────────");
 
-    if (chatTitle.includes("VIP Gold Trader Alliance")) {
+    if (chatTitle.includes("Gold Trader Alliance")) {
       await handleVipSignal(msg.text);
     } else if (chatTitle.includes("PREMIUM SIGNAL") && chatTitle.includes("FOREX TRADING WIZARD")) {
       await handlePremiumMessage(msg.text);
