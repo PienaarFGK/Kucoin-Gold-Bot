@@ -361,7 +361,7 @@ async function main() {
     new StringSession(sessionStr),
     parseInt(process.env.TELEGRAM_API_ID, 10),
     process.env.TELEGRAM_API_HASH,
-    { connectionRetries: 5 }
+    { connectionRetries: Infinity, retryDelay: 3000, autoReconnect: true }
   );
 
   await client.start({
@@ -377,6 +377,17 @@ async function main() {
   console.log(` Session saved. For Railway:\n  TELEGRAM_SESSION=${savedSession}\n`);
 
   startMonitorLoop();
+
+  // Keepalive — ping Telegram every 4 minutes to detect silent disconnects.
+  // If ping fails, exit so Railway restarts the container with a fresh connection.
+  setInterval(async () => {
+    try {
+      await client.getMe();
+    } catch (err) {
+      console.error(` Telegram keepalive failed — restarting: ${err.message}`);
+      process.exit(1);
+    }
+  }, 4 * 60 * 1000);
 
   client.addEventHandler(async (event) => {
     const msg = event.message;
