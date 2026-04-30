@@ -401,9 +401,17 @@ async function main() {
     }
   }, new NewMessage({}));
 
-  // Health check — keeps Railway container alive
+  // Health check + trades log server — keeps Railway container alive
   const PORT = process.env.PORT || 3000;
-  http.createServer((_, res) => res.end("Gold Bot running")).listen(PORT, () => {
+  http.createServer((req, res) => {
+    if (req.url === "/trades.log" && existsSync(LOG_FILE)) {
+      res.writeHead(200, { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" });
+      res.end(readFileSync(LOG_FILE, "utf8"));
+    } else {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("KuCoin Gold Bot running");
+    }
+  }).listen(PORT, () => {
     console.log(` Health check on port ${PORT}`);
   });
 
