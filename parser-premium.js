@@ -7,6 +7,7 @@
  * Follow-up messages:
  *   SET SL@4705.89
  *   MOVE SL@4696.00 TO SECURE SOME PROFIT !!
+ *   MOVE TP@4598.80
  *   take profit now
  */
 
@@ -25,6 +26,13 @@ export function parsePremiumMessage(text) {
   const slMatch = t.match(/(?:set|move)\s+sl@([\d.]+)/i);
   if (slMatch) {
     return { type: "setSL", price: parseFloat(slMatch[1]) };
+  }
+
+  // ── Move TP ────────────────────────────────────────────────────────────────
+  // "MOVE TP@4598.80"
+  const tpMatch = t.match(/(?:set|move)\s+tp@([\d.]+)/i);
+  if (tpMatch) {
+    return { type: "moveTP", price: parseFloat(tpMatch[1]) };
   }
 
   // ── Initial signal ─────────────────────────────────────────────────────────

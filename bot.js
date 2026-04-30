@@ -224,6 +224,26 @@ async function handlePremiumMessage(text) {
     return;
   }
 
+  // ── Move TP ──────────────────────────────────────────────────────────────────
+  if (parsed.type === "moveTP") {
+    if (!premiumPosition) { console.log("  No active PREMIUM position for TP move"); return; }
+    try {
+      if (premiumPosition.tpOrderId) await cancelStopOrder(premiumPosition.tpOrderId);
+      const newTpId = await placeStopOrder({
+        side:      premiumPosition.closeSide,
+        stop:      premiumPosition.side === "buy" ? "up" : "down",
+        stopPrice: parsed.price,
+        size:      premiumPosition.lots,
+      });
+      premiumPosition.tpOrderId = newTpId;
+      console.log(`  TP moved to ${parsed.price} ✓  condId: ${newTpId}`);
+      logTrade({ mode: "live", group: "PREMIUM", status: "tp_moved", price: parsed.price, condId: newTpId });
+    } catch (err) {
+      console.error(`  TP move failed: ${err.message}`);
+    }
+    return;
+  }
+
   // ── Move / Set SL ────────────────────────────────────────────────────────────
   if (parsed.type === "setSL") {
     if (!premiumPosition) { console.log("  No active PREMIUM position for SL move"); return; }
